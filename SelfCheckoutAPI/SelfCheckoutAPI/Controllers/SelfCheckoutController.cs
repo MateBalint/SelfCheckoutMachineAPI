@@ -79,9 +79,11 @@ namespace SelfCheckoutAPI.Controllers
             {
                 string inserted = data.SelectToken("inserted").ToString();
                 string price = data.SelectToken("price").ToString();
-                var values = JsonConvert.DeserializeObject<Dictionary<string, int>>(inserted);
-                DictionaryService.Merge(AvailableCurrency, values);
+                var insertedMoneyDict = JsonConvert.DeserializeObject<Dictionary<string, int>>(inserted);
+                DictionaryService.Merge(AvailableCurrency, insertedMoneyDict);
                 response = Request.CreateResponse(HttpStatusCode.OK, "success");
+                int insertedMoneySum = PaymentService.CalculateInsertedMoney(insertedMoneyDict);
+                PaymentService.CalculateChange(insertedMoneySum, Int32.Parse(price), Money);
             }
             catch(NotEnoughMoneyException ex)
             {
