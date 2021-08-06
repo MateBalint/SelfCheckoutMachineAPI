@@ -35,7 +35,7 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
             }
 
             return response;
@@ -62,7 +62,7 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
             }
 
             return response;
@@ -94,11 +94,38 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch(NotEnoughMoneyException ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("api/v1/BlockedBills")]
+        public HttpResponseMessage GetAvailableDenominations(JObject data)
+        {
+            HttpResponseMessage response;
+
+            try
+            {
+                string inserted = data.SelectToken("inserted").ToString();
+                string price = data.SelectToken("price").ToString();
+                var insertedMoneyDict = JsonConvert.DeserializeObject<Dictionary<string, int>>(inserted);
+                DictionaryService.Merge(AvailableCurrency, insertedMoneyDict);
+                int insertedMoneySum = PaymentService.CalculateInsertedMoney(insertedMoneyDict);
+                response = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (NotEnoughMoneyException ex)
+            {
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+            }
+            catch (Exception ex)
+            {
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
             }
 
             return response;

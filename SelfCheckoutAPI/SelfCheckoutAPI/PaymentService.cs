@@ -73,5 +73,39 @@ namespace SelfCheckoutAPI
 
             return changeDict;
         }
+
+        /// <summary>
+        /// Calculates the change based on the available denominations.
+        /// </summary>
+        /// <param name="changeAmount">The amount of the change that should be given back.</param>
+        /// <param name="availableDenominations">The currently available denominations the program can give back change from.</param>
+        /// <returns>
+        /// The amount of the change in a dictionary if no exception happened, otherwise throws exception.
+        /// </returns>
+        public static Dictionary<string, int> CalculateChangeDenomintations(int changeAmount, Dictionary<string, int> availableDenominations)
+        {
+            var changeDict = new Dictionary<string, int>();
+            List<int> availableDenominationList = DictionaryService.CreateList(availableDenominations);
+            foreach (var item in availableDenominationList)
+            {
+                if (changeAmount > 0)
+                {
+                    int amount = changeAmount / item;
+                    if (amount > 0)
+                    {
+                        changeDict.Add(item.ToString(), amount);
+                        changeAmount -= (item * amount);
+                    }
+                }
+            }
+
+            if (changeAmount != 0)
+            {
+                throw new NotEnoughMoneyException("There's not enough money to give proper change!");
+            }
+
+
+            return changeDict;
+        }
     }
 }

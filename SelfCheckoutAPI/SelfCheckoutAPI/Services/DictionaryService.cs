@@ -23,5 +23,26 @@ namespace SelfCheckoutAPI
                 }
             }
         }
+
+        /// <summary>
+        /// Creates a sorted and reversed list from a given dictionary that contains integer values.
+        /// </summary>
+        /// <param name="dict">Source dictionary.</param>
+        /// <returns>Integer list that contains the key of the dicionary value times.</returns>
+        public static List<int> CreateList(Dictionary<string, int> dict)
+        {
+            var list = new List<int>();
+            foreach (var item in dict)
+            {
+                for (int i = 0; i < item.Value; i++)
+                {
+                    list.Add(int.Parse(item.Key));
+                }
+            }
+
+            list.Sort();
+            list.Reverse();
+            return list;
+        }
     }
 }
