@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace SelfCheckoutAPI
 {
@@ -12,7 +9,7 @@ namespace SelfCheckoutAPI
         /// </summary>
         /// <param name="destionation">Dictionary we would like to insert values into.</param>
         /// <param name="source">Dictionary that contains values we would like to insert.</param>
-        public static void Merge(Dictionary<int, int> destionation, Dictionary<int, int> source)
+        public static void Merge(Dictionary<string, int> destionation, Dictionary<string, int> source)
         {
             foreach (var item in source)
             {
