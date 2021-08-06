@@ -11,13 +11,7 @@ namespace SelfCheckoutAPI.Controllers
 {
     public class SelfCheckoutController : ApiController
     {
-        private static Dictionary<string, int> AvailableCurrency;
-
-        public SelfCheckoutController()
-        {
-            AvailableCurrency = new Dictionary<string, int>();
-           
-        }
+        private static Dictionary<string, int> AvailableCurrency = new Dictionary<string, int>();
 
         /// <summary>
         /// Gets the currently stored currencies.
@@ -62,7 +56,7 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
 
             return response;
@@ -94,11 +88,11 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch(NotEnoughMoneyException ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
 
             return response;
@@ -121,11 +115,11 @@ namespace SelfCheckoutAPI.Controllers
             }
             catch (NotEnoughMoneyException ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
             catch (Exception ex)
             {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.InnerException);
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
 
             return response;

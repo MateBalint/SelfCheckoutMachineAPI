@@ -1,5 +1,6 @@
 ﻿using SelfCheckoutAPI.Exceptions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SelfCheckoutAPI
 {
@@ -57,8 +58,8 @@ namespace SelfCheckoutAPI
         public static Dictionary<string, int> CalculateChangeDenomintations(int changeAmount)
         {
             var changeDict = new Dictionary<string, int>();
-            Denominations.Reverse();
-            foreach (var item in Denominations)
+            List<int> descendingList = Denominations.OrderByDescending(x => x).ToList();
+            foreach (var item in descendingList)
             {
                 if (changeAmount > 0)
                 {
