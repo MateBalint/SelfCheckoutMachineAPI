@@ -12,12 +12,11 @@ namespace SelfCheckoutAPI.Controllers
     public class SelfCheckoutController : ApiController
     {
         private static Dictionary<string, int> AvailableCurrency;
-        private static List<int> Money;
 
         public SelfCheckoutController()
         {
             AvailableCurrency = new Dictionary<string, int>();
-            Money = new List<int>() { 5, 10, 20, 50, 100, 200, 500, 1000, 5000, 10000, 20000 };
+           
         }
 
         /// <summary>
@@ -81,9 +80,10 @@ namespace SelfCheckoutAPI.Controllers
                 string price = data.SelectToken("price").ToString();
                 var insertedMoneyDict = JsonConvert.DeserializeObject<Dictionary<string, int>>(inserted);
                 DictionaryService.Merge(AvailableCurrency, insertedMoneyDict);
-                response = Request.CreateResponse(HttpStatusCode.OK, "success");
                 int insertedMoneySum = PaymentService.CalculateInsertedMoney(insertedMoneyDict);
-                PaymentService.CalculateChange(insertedMoneySum, Int32.Parse(price), Money);
+                Dictionary<string, int> changeDict = PaymentService.CalculateChange(insertedMoneySum, Int32.Parse(price));
+                string changeJson = JsonConvert.SerializeObject(changeDict);
+                response = Request.CreateResponse(HttpStatusCode.OK, changeJson);
             }
             catch(NotEnoughMoneyException ex)
             {

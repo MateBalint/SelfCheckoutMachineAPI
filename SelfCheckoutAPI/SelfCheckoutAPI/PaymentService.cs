@@ -1,36 +1,77 @@
 ﻿using SelfCheckoutAPI.Exceptions;
-using System;
 using System.Collections.Generic;
 
 namespace SelfCheckoutAPI
 {
     public static class PaymentService
     {
-        public static int CalculateChange(int insertedMoney, int price, List<int> money)
+        private static List<int> Denominations = new List<int>() { 5, 10, 20, 50, 100, 200, 500, 1000, 5000, 10000, 20000 };
+
+        /// <summary>
+        /// Determines the amount of the change.
+        /// </summary>
+        /// <param name="insertedMoney">The money that was inserted into the machine.</param>
+        /// <param name="price">Amount of money the user has to pay.</param>
+        /// <returns>A dictionary whose key is the denomination and the value is the amount of the denomination.</returns>
+        public static Dictionary<string, int> CalculateChange(int insertedMoney, int price)
         {
-            int change = 0;
+            var changeDict = new Dictionary<string, int>();
             if (insertedMoney == price)
             {
-                change = 0;
+                changeDict.Add("No change", 0);
             }
             else if (insertedMoney < price)
             {
                 throw new NotEnoughMoneyException("The inserted money is not enough to cover the price!");
             }
+            else if (insertedMoney > price)
+            {
+                int difference = insertedMoney - price;
+                changeDict = CalculateChangeDenomintations(difference);
+            }
 
-            return change;
+            return changeDict;
         }
 
-
+        /// <summary>
+        /// Calculates the sum of the given dictionary values using the keys.
+        /// </summary>
+        /// <param name="insertedMoney">Dicionary whose key is the denomination and the value is the amount of the denomination.</param>
+        /// <returns>The sum of the dictionary values.</returns>
         public static int CalculateInsertedMoney(Dictionary<string, int> insertedMoney)
         {
             int money = 0;
             foreach (var item in insertedMoney)
             {
-                money += Int32.Parse(item.Key) * item.Value;
+                money += int.Parse(item.Key) * item.Value;
             }
 
             return money;
+        }
+
+        /// <summary>
+        /// Calculates the denominations and the amount of them that will be given back as a change.
+        /// </summary>
+        /// <param name="changeAmount">The sum of the change.</param>
+        /// <returns>A dictionary whose key is the denomination and the value is the amount of the denomination.</returns>
+        public static Dictionary<string, int> CalculateChangeDenomintations(int changeAmount)
+        {
+            var changeDict = new Dictionary<string, int>();
+            Denominations.Reverse();
+            foreach (var item in Denominations)
+            {
+                if (changeAmount > 0)
+                {
+                    int amount = changeAmount / item;
+                    if (amount > 0)
+                    {
+                        changeDict.Add(item.ToString(), amount);
+                        changeAmount -= (item * amount); 
+                    }
+                }
+            }
+
+            return changeDict;
         }
     }
 }
