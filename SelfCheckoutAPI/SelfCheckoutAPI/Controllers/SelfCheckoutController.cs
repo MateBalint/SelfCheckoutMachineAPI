@@ -68,6 +68,13 @@ namespace SelfCheckoutAPI.Controllers
             return response;
         }
 
+        /// <summary>
+        /// This method is responsible for the payment process.
+        /// </summary>
+        /// <param name="data">Contains the price and the amount of money that was inserted in the machine.</param>
+        /// <returns>A 200 OK reponse along with the change if no exception happened.
+        /// If an exception happened it returns a 400 Bad Request with the error description.
+        /// </returns>
         [HttpPost]
         [Route("api/v1/Checkout")]
         public HttpResponseMessage ProcessPayment(JObject data)
