@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SelfCheckoutAPI.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -81,6 +82,10 @@ namespace SelfCheckoutAPI.Controllers
                 var values = JsonConvert.DeserializeObject<Dictionary<string, int>>(inserted);
                 DictionaryService.Merge(AvailableCurrency, values);
                 response = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch(NotEnoughMoneyException ex)
+            {
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
             catch (Exception ex)
             {
